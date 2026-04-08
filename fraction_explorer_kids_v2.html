@@ -1,0 +1,334 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#FFF9F0;font-family:'Nunito',sans-serif;color:#2d3436}
+  .wrap{padding:1.2rem 1rem 2rem;max-width:780px;margin:0 auto}
+  .hero{text-align:center;margin-bottom:1.2rem}
+  .hero-title{font-size:28px;font-weight:900;background:linear-gradient(135deg,#FF6B6B,#A29BFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
+  .hero-sub{font-size:14px;color:#636e72;margin-top:4px}
+  .input-zone{background:#fff;border-radius:20px;padding:1.2rem 1.4rem;border:2.5px solid #e8e0ff;margin-bottom:1.2rem}
+  .input-zone-title{font-size:13px;font-weight:700;color:#A29BFE;letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px}
+  .fraction-builder{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .frac-box{display:flex;flex-direction:column;align-items:center}
+  .frac-box input{width:72px;text-align:center;font-size:26px;font-weight:900;font-family:'Nunito',sans-serif;border:2.5px solid #e8e0ff;border-radius:12px;padding:6px 4px;background:#faf8ff;color:#2d3436;outline:none;transition:border-color .2s}
+  .frac-box input:focus{border-color:#A29BFE}
+  .frac-bar{width:72px;height:4px;background:linear-gradient(90deg,#FF6B6B,#A29BFE);border-radius:4px;margin:4px 0}
+  .frac-lbl{font-size:11px;font-weight:700;color:#636e72;margin-top:4px}
+  .add-btn{background:linear-gradient(135deg,#A29BFE,#FD79A8);color:#fff;font-family:'Nunito',sans-serif;font-size:15px;font-weight:900;border:none;border-radius:14px;padding:10px 20px;cursor:pointer;transition:transform .15s,opacity .15s}
+  .add-btn:hover{opacity:.88;transform:scale(1.04)}
+  .add-btn:active{transform:scale(.97)}
+  .presets-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .preset{background:#f0eeff;color:#6c5ce7;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;border:2px solid #d6d0ff;border-radius:10px;padding:5px 12px;cursor:pointer;transition:background .15s,transform .1s}
+  .preset:hover{background:#e0d9ff;transform:scale(1.05)}
+  .err{font-size:13px;font-weight:700;color:#FF6B6B;margin-top:8px;min-height:18px}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-bottom:1.4rem}
+  .fcard{border-radius:18px;padding:14px 14px 12px;border:2.5px solid;position:relative;transition:transform .18s}
+  .fcard:hover{transform:translateY(-3px)}
+  .fcard .rm{position:absolute;top:8px;right:10px;font-size:18px;font-weight:900;cursor:pointer;line-height:1;background:none;border:none;opacity:.45;font-family:'Nunito',sans-serif}
+  .fcard .rm:hover{opacity:.9}
+  .fcard .big-frac{font-size:28px;font-weight:900;margin-bottom:6px;line-height:1.1}
+  .fcard .pill{display:inline-block;font-size:11px;font-weight:700;border-radius:8px;padding:3px 8px;margin:2px 2px 0 0}
+  .fcard .tag{font-size:11px;font-weight:700;color:#636e72;margin-top:4px}
+  .fcard .tag span{font-weight:900;color:#2d3436}
+  .nl-section{background:#fff;border-radius:20px;padding:1.1rem 1.2rem;border:2.5px solid #ffd6ec;margin-bottom:1.1rem;overflow:hidden}
+  .nl-section.green{border-color:#c7f5e8}
+  .nl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+  .nl-title{font-size:13px;font-weight:700;color:#FD79A8;letter-spacing:.05em;text-transform:uppercase}
+  .nl-section.green .nl-title{color:#1DD1A1}
+  .zoom-controls{display:flex;align-items:center;gap:6px}
+  .zbtn{width:32px;height:32px;border-radius:50%;border:2.5px solid;font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .12s,opacity .12s;line-height:1;padding:0}
+  .zbtn:hover{transform:scale(1.12);opacity:.85}
+  .zbtn:active{transform:scale(.95)}
+  .zoom-label{font-size:12px;font-weight:700;min-width:52px;text-align:center}
+  .pan-hint{font-size:11px;font-weight:700;color:#b2bec3;margin-top:5px}
+  canvas{display:block;cursor:grab;touch-action:none}
+  canvas:active{cursor:grabbing}
+</style>
+
+<div class="wrap">
+  <h2 class="sr-only">Fraction Explorer – fractions, decimals, percents and interactive number lines</h2>
+  <div class="hero">
+    <div class="hero-title">Fraction Explorer</div>
+    <div class="hero-sub">Type a fraction → see its decimal, percent and where it lives!</div>
+  </div>
+
+  <div class="input-zone">
+    <div class="input-zone-title">Build your fraction</div>
+    <div class="fraction-builder">
+      <div class="frac-box">
+        <input type="number" id="num" value="1" min="-20" max="20" step="1"/>
+        <div class="frac-bar"></div>
+        <input type="number" id="den" value="2" min="-20" max="20" step="1"/>
+        <span class="frac-lbl">top / bottom</span>
+      </div>
+      <button class="add-btn" onclick="addFraction()">+ Add it!</button>
+    </div>
+    <div class="presets-row">
+      <span style="font-size:12px;font-weight:700;color:#636e72;align-self:center">Try:</span>
+      <button class="preset" onclick="addPreset(1,2)">½</button>
+      <button class="preset" onclick="addPreset(1,3)">⅓</button>
+      <button class="preset" onclick="addPreset(3,4)">¾</button>
+      <button class="preset" onclick="addPreset(2,3)">⅔</button>
+      <button class="preset" onclick="addPreset(1,4)">¼</button>
+      <button class="preset" onclick="addPreset(5,4)">5/4</button>
+      <button class="preset" onclick="addPreset(7,3)">7/3</button>
+      <button class="preset" onclick="addPreset(9,2)">9/2</button>
+    </div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div class="cards-grid" id="cards"></div>
+
+  <div class="nl-section" id="nl1-section">
+    <div class="nl-header">
+      <div>
+        <div class="nl-title">Number line 1 — with percentages</div>
+        <div class="pan-hint">drag to pan · pinch or scroll to zoom</div>
+      </div>
+      <div class="zoom-controls">
+        <button class="zbtn" id="z1out" style="border-color:#FD79A8;color:#FD79A8;background:#fff0f8" onclick="zoom(1,-1)">−</button>
+        <span class="zoom-label" id="zl1" style="color:#FD79A8">zoom</span>
+        <button class="zbtn" id="z1in"  style="border-color:#FD79A8;color:#FD79A8;background:#fff0f8" onclick="zoom(1,1)">+</button>
+      </div>
+    </div>
+    <canvas id="nl1" height="140"></canvas>
+  </div>
+
+  <div class="nl-section green" id="nl2-section">
+    <div class="nl-header">
+      <div>
+        <div class="nl-title">Number line 2 — positive numbers only</div>
+        <div class="pan-hint">drag to pan · pinch or scroll to zoom</div>
+      </div>
+      <div class="zoom-controls">
+        <button class="zbtn" id="z2out" style="border-color:#1DD1A1;color:#1DD1A1;background:#e8fdf5" onclick="zoom(2,-1)">−</button>
+        <span class="zoom-label" id="zl2" style="color:#1DD1A1">zoom</span>
+        <button class="zbtn" id="z2in"  style="border-color:#1DD1A1;color:#1DD1A1;background:#e8fdf5" onclick="zoom(2,1)">+</button>
+      </div>
+    </div>
+    <canvas id="nl2" height="140"></canvas>
+  </div>
+</div>
+
+<script>
+const PAL=[
+  {bg:'#FFF0F0',border:'#FF6B6B',dot:'#FF6B6B',txt:'#c0392b'},
+  {bg:'#FFF5E8',border:'#FF9F43',dot:'#FF9F43',txt:'#a0522d'},
+  {bg:'#FFFBE6',border:'#F9CA24',dot:'#F9CA24',txt:'#7d6608'},
+  {bg:'#E8FAFF',border:'#48DBFB',dot:'#00bcd4',txt:'#0c6e7e'},
+  {bg:'#E8FDF5',border:'#1DD1A1',dot:'#1DD1A1',txt:'#0a6644'},
+  {bg:'#F0EEFF',border:'#A29BFE',dot:'#A29BFE',txt:'#4834d4'},
+  {bg:'#FFF0F8',border:'#FD79A8',dot:'#FD79A8',txt:'#ad1457'},
+  {bg:'#E8FFF7',border:'#55EFC4',dot:'#00b894',txt:'#00695c'},
+];
+
+let fractions=[], ci=0;
+
+const states={
+  1:{lo:0, span:10},
+  2:{lo:0, span:10}
+};
+const MINSPAN=0.5, MAXSPAN=12;
+
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a}
+function simplify(n,d){if(!d)return[n,d];const g=gcd(Math.abs(n),Math.abs(d));return[n/g,d/g]}
+function isRepeating(n,d){let dn=Math.abs(d),g=gcd(Math.abs(n),dn);dn/=g;while(dn%2===0)dn/=2;while(dn%5===0)dn/=5;return dn!==1}
+function fmtDec(v){const s=v.toFixed(6).replace(/\.?0+$/,'');return s.length>8?v.toFixed(4):s||'0'}
+function toMixed(sn,sd){if(Math.abs(sn)<Math.abs(sd))return null;const w=Math.trunc(sn/sd),r=sn-w*sd;return r===0?`${w}`:`${w} ${Math.abs(r)}⁄${Math.abs(sd)}`}
+function addPreset(n,d){document.getElementById('num').value=n;document.getElementById('den').value=d;addFraction()}
+
+function addFraction(){
+  const n=parseInt(document.getElementById('num').value);
+  const d=parseInt(document.getElementById('den').value);
+  const err=document.getElementById('err');
+  if(isNaN(n)||isNaN(d)){err.textContent='Please enter valid numbers!';return}
+  if(d===0){err.textContent="The bottom number can't be zero!";return}
+  const val=n/d;
+  if(fractions.find(f=>Math.abs(f.value-val)<1e-9)){err.textContent='That fraction is already there!';return}
+  if(fractions.length>=8){err.textContent='Max 8 fractions — remove one first!';return}
+  err.textContent='';
+  const[sn,sd]=simplify(n,d);
+  const p=PAL[ci%PAL.length];ci++;
+  fractions.push({n,d,sn,sd,value:val,...p});
+  fractions.sort((a,b)=>a.value-b.value);
+  renderAll();
+}
+
+function removeFraction(i){fractions.splice(i,1);renderAll()}
+
+function renderAll(){renderCards();drawLine(1);drawLine(2)}
+
+function renderCards(){
+  const c=document.getElementById('cards');
+  if(!fractions.length){c.innerHTML='<p style="font-size:13px;font-weight:700;color:#636e72;padding:4px 0">Add a fraction above to get started!</p>';return}
+  c.innerHTML=fractions.map((f,i)=>{
+    const dec=fmtDec(f.value),rep=isRepeating(f.n,f.d);
+    const pct=parseFloat((f.value*100).toFixed(4))+'%';
+    const simp=f.sn!==f.n||f.sd!==f.d?`<div class="pill" style="background:${f.bg};color:${f.txt}">= ${f.sn}⁄${f.sd}</div>`:'';
+    const mix=toMixed(f.sn,f.sd)?`<div class="tag">Mixed: <span>${toMixed(f.sn,f.sd)}</span></div>`:'';
+    return `<div class="fcard" style="background:${f.bg};border-color:${f.border}">
+      <button class="rm" onclick="removeFraction(${i})" style="color:${f.txt}">×</button>
+      <div class="big-frac" style="color:${f.txt}">${f.n}⁄${f.d}</div>
+      ${simp}
+      <div class="pill" style="background:${f.border}22;color:${f.txt}">${dec}${rep?'…':''}</div>
+      <div class="pill" style="background:${f.border}33;color:${f.txt}">${pct}</div>
+      ${mix}
+    </div>`
+  }).join('')
+}
+
+function zoom(id,dir){
+  const s=states[id];
+  const cx=s.lo+s.span/2;
+  const factor=dir>0?0.6:1.667;
+  let ns=Math.max(MINSPAN,Math.min(MAXSPAN,s.span*factor));
+  let nl=cx-ns/2;
+  if(id===2){nl=Math.max(0,nl)}
+  s.lo=nl; s.span=ns;
+  drawLine(id);
+}
+
+function pickStep(span){
+  const steps=[0.05,0.1,0.2,0.25,0.5,1,2,5];
+  for(let st of steps){if(span/st<=20)return st}
+  return 5;
+}
+
+function drawLine(id){
+  const cv=document.getElementById('nl'+id);
+  const s=states[id];
+  const W=cv.parentElement.clientWidth||700;
+  cv.width=W; cv.height=id===1?150:130;
+  const ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,cv.height);
+  const showPct=id===1;
+  const midY=showPct?80:72;
+  const L=44,R=W-44,lw=R-L;
+  const hi=s.lo+s.span;
+
+  function toX(v){return L+((v-s.lo)/s.span)*lw}
+
+  ctx.strokeStyle='#d0d0d0';ctx.lineWidth=3;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(L,midY);ctx.lineTo(R,midY);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(L-8,midY-5);ctx.lineTo(L,midY);ctx.lineTo(L-8,midY+5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(R+8,midY-5);ctx.lineTo(R,midY);ctx.lineTo(R+8,midY+5);ctx.stroke();
+
+  const step=pickStep(s.span);
+  let v=parseFloat((Math.ceil(s.lo/step)*step).toFixed(8));
+  while(v<=hi+1e-9){
+    const x=toX(v);
+    if(x>=L-2&&x<=R+2){
+      const isMaj=Math.abs(v-Math.round(v/step)*step)<1e-9&&Math.abs(v%1)<1e-6||Math.abs(v%1)<1e-6;
+      const isInt=Math.abs(v-Math.round(v))<1e-6;
+      ctx.strokeStyle=isInt?'#aaa':isMaj?'#bbb':'#ddd';
+      ctx.lineWidth=isInt?2:1;
+      ctx.beginPath();ctx.moveTo(x,midY-(isInt?9:5));ctx.lineTo(x,midY+(isInt?9:5));ctx.stroke();
+      ctx.font=`${isInt?'700':'400'} ${isInt?12:10}px 'Nunito',sans-serif`;
+      ctx.fillStyle=isInt?'#444':'#888';ctx.textAlign='center';
+      const lbl=parseFloat(v.toFixed(6));
+      ctx.fillText(lbl,x,midY+22);
+      if(showPct&&isInt){
+        ctx.font='bold 10px \'Nunito\',sans-serif';
+        ctx.fillStyle='#FD79A8';
+        ctx.fillText((lbl*100).toFixed(0)+'%',x,midY+36);
+      }
+    }
+    v=parseFloat((v+step).toFixed(8));
+  }
+
+  const zLabel=document.getElementById('zl'+id);
+  zLabel.textContent=s.span<=1?'zoomed in':s.span>=10?'full view':'zoomed';
+
+  const placed=[];
+  fractions.forEach((f,i)=>{
+    if(id===2&&f.value<0)return;
+    const x=toX(f.value);
+    if(x<L-20||x>R+20)return;
+    const r=11;
+    ctx.fillStyle=f.dot;
+    ctx.beginPath();ctx.arc(x,midY,r,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 10px \'Nunito\',sans-serif';
+    ctx.fillStyle='#fff';ctx.textAlign='center';
+    ctx.fillText(i+1,x,midY+3.5);
+
+    let near=placed.filter(p=>Math.abs(p.x-x)<60).length;
+    let lY=midY-26-near*18;
+    placed.push({x});
+
+    ctx.font='bold 12px \'Nunito\',sans-serif';
+    ctx.fillStyle=f.dot;ctx.textAlign='center';
+    const lbl=f.sn!==f.n||f.sd!==f.d?`${f.sn}⁄${f.sd}`:`${f.n}⁄${f.d}`;
+    ctx.fillText(lbl,x,lY);
+    if(lY<midY-28){
+      ctx.strokeStyle=f.dot+'88';ctx.lineWidth=1.2;ctx.setLineDash([3,3]);
+      ctx.beginPath();ctx.moveTo(x,lY+3);ctx.lineTo(x,midY-r-2);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  });
+}
+
+function setupDrag(id){
+  const cv=document.getElementById('nl'+id);
+  const s=states[id];
+  let dragging=false,startX=0,startLo=0,lastDist=0;
+
+  cv.addEventListener('mousedown',e=>{dragging=true;startX=e.clientX;startLo=s.lo;cv.style.cursor='grabbing'});
+  window.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    const dx=e.clientX-startX;
+    const W=cv.clientWidth||700;
+    const scale=s.span/(W-88);
+    let nl=startLo-dx*scale;
+    if(id===2)nl=Math.max(0,nl);
+    s.lo=nl;drawLine(id);
+  });
+  window.addEventListener('mouseup',()=>{dragging=false;cv.style.cursor='grab'});
+
+  cv.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const rect=cv.getBoundingClientRect();
+    const mx=(e.clientX-rect.left-44)/Math.max(1,rect.width-88);
+    const cx=s.lo+mx*s.span;
+    const factor=e.deltaY>0?1.25:0.8;
+    let ns=Math.max(MINSPAN,Math.min(MAXSPAN,s.span*factor));
+    let nl=cx-mx*ns;
+    if(id===2)nl=Math.max(0,nl);
+    s.lo=nl;s.span=ns;drawLine(id);
+  },{passive:false});
+
+  cv.addEventListener('touchstart',e=>{
+    if(e.touches.length===1){dragging=true;startX=e.touches[0].clientX;startLo=s.lo}
+    if(e.touches.length===2){dragging=false;lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)}
+  },{passive:true});
+  cv.addEventListener('touchmove',e=>{
+    if(e.touches.length===1&&dragging){
+      const dx=e.touches[0].clientX-startX;
+      const W=cv.clientWidth||700;
+      const scale=s.span/(W-88);
+      let nl=startLo-dx*scale;
+      if(id===2)nl=Math.max(0,nl);
+      s.lo=nl;drawLine(id);
+    }
+    if(e.touches.length===2){
+      const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      const factor=lastDist/d;
+      const cx=s.lo+s.span/2;
+      let ns=Math.max(MINSPAN,Math.min(MAXSPAN,s.span*factor));
+      let nl=cx-ns/2;
+      if(id===2)nl=Math.max(0,nl);
+      s.lo=nl;s.span=ns;lastDist=d;drawLine(id);
+    }
+  },{passive:true});
+  cv.addEventListener('touchend',()=>{dragging=false});
+}
+
+setupDrag(1);setupDrag(2);
+
+window.addEventListener('resize',()=>renderAll());
+document.getElementById('num').addEventListener('keydown',e=>{if(e.key==='Enter')addFraction()});
+document.getElementById('den').addEventListener('keydown',e=>{if(e.key==='Enter')addFraction()});
+
+addPreset(1,2); addPreset(3,4); addPreset(5,4);
+</script>
